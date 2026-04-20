@@ -1,8 +1,8 @@
 # Program Name: Assignment5.py
-# Course: IT3883/Section XXX
+# Course: IT3883/Section W01
 # Student Name: Jermaine Ayuk
 # Assignment Number: Lab 5
-# Due Date: xx/xx/2026
+# Due Date: 04/22/2026
 # Purpose: This program reads daily temperature data from an input file,
 #          stores it in a SQLite database, and computes the average
 #          temperature for Sunday and Thursday.
