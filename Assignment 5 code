@@ -1,0 +1,74 @@
+# Program Name: Assignment5.py
+# Course: IT3883/Section XXX
+# Student Name: Jermaine Ayuk
+# Assignment Number: Lab 5
+# Due Date: xx/xx/2026
+# Purpose: This program reads daily temperature data from an input file,
+#          stores it in a SQLite database, and computes the average
+#          temperature for Sunday and Thursday.
+# Resources Used: Python documentation (sqlite3, file I/O examples);
+#                 Guidance from Microsoft Copilot for explanation only.
+#                 All code written by me.
+
+import sqlite3
+
+# -------------------------------------------------------------
+# Step 1: Create or connect to the SQLite database
+# -------------------------------------------------------------
+conn = sqlite3.connect("TemperatureData.db")
+cursor = conn.cursor()
+
+# -------------------------------------------------------------
+# Step 2: Create the table
+# -------------------------------------------------------------
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS TemperatureReadings (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Day_Of_Week TEXT,
+    Temperature_Value REAL
+)
+""")
+
+# -------------------------------------------------------------
+# Step 3: Read the input file and insert data
+# -------------------------------------------------------------
+# The input file should have lines like:
+# Sunday 72.5
+# Monday 68.3
+# ...
+file_name = "Assignment5input.txt"
+
+with open(file_name, "r") as file:
+    for line in file:
+        parts = line.strip().split()
+        if len(parts) == 2:
+            day = parts[0]
+            temp = float(parts[1])
+            cursor.execute(
+                "INSERT INTO TemperatureReadings (Day_Of_Week, Temperature_Value) VALUES (?, ?)",
+                (day, temp)
+            )
+
+conn.commit()
+
+# -------------------------------------------------------------
+# Step 4: Compute average temperature for Sunday and Thursday
+# -------------------------------------------------------------
+def avg_temp(day):
+    cursor.execute("SELECT AVG(Temperature_Value) FROM TemperatureReadings WHERE Day_Of_Week = ?", (day,))
+    result = cursor.fetchone()[0]
+    return result
+
+sunday_avg = avg_temp("Sunday")
+thursday_avg = avg_temp("Thursday")
+
+# -------------------------------------------------------------
+# Step 5: Print results
+# -------------------------------------------------------------
+print(f"Average temperature for Sunday: {sunday_avg:.2f}")
+print(f"Average temperature for Thursday: {thursday_avg:.2f}")
+
+# -------------------------------------------------------------
+# Step 6: Close the database connection
+# -------------------------------------------------------------
+conn.close()
